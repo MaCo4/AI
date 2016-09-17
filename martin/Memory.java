@@ -2,6 +2,7 @@ package martin;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -18,10 +19,12 @@ public class Memory {
 
     public List<MemoryNode> memories;
     private int nextId;
+    public MemoryMatrix mat;
 
     public Memory() {
         memories = new ArrayList<>();
         nextId = 1;
+        mat = new MemoryMatrix();
     }
 
     public MemoryNode addMemory(String value) {
@@ -61,36 +64,46 @@ public class Memory {
         return false;
     }
     
-    public String findClosestMemory(String value) {
-        int len = recallMemory(value).connections.length;
+    public MemoryNode findClosestMemory(String value) {
+        /*int len = recallMemory(value).connections.length;
         if (len == 0) {
             return null;
         }
         int closest = recallMemory(value).connections[0];
         if (closest == 0) {
             return null;
+        }*/
+        int[] closest = mat.getHighestElement(recallMemory(value).id);
+        if (closest[0] == 0) {
+            return null;
         }
-        return recallMemory(closest).value;
+        return recallMemory(closest[0]);
     }
 
     public void loadFromFile(File file) throws FileNotFoundException, IOException {
         DataInputStream in = new DataInputStream(new FileInputStream(file));
         memories = new ArrayList<>();
         while (in.available() > 0) {
-            int nodeId = in.readInt();
-            if (nodeId > nextId) {
-                nextId = nodeId + 1;
+            try {
+                int nodeId = in.readInt();
+                if (nodeId > nextId) {
+                    nextId = nodeId + 1;
+                }
+                int nodeValueLen = in.readInt();
+                byte[] nodeValueBuf = new byte[nodeValueLen];
+                in.read(nodeValueBuf, 0, nodeValueBuf.length);
+                String nodeValue = new String(nodeValueBuf, "UTF-8");
+                int nodeConnectionsNum = in.readInt();
+                int[] nodeConnections = new int[nodeConnectionsNum];
+                for (int i = 0; i < nodeConnectionsNum; i++) {
+                    nodeConnections[i] = in.readInt();
+                    //mat.incElement(nodeId, nodeConnections[i]);
+                }
+                memories.add(new MemoryNode(nodeId, nodeValue, nodeConnections));
             }
-            int nodeValueLen = in.readInt();
-            byte[] nodeValueBuf = new byte[nodeValueLen];
-            in.read(nodeValueBuf, 0, nodeValueBuf.length);
-            String nodeValue = new String(nodeValueBuf, "UTF-8");
-            int nodeConnectionsNum = in.readInt();
-            int[] nodeConnections = new int[nodeConnectionsNum];
-            for (int i = 0; i < nodeConnectionsNum; i++) {
-                nodeConnections[i] = in.readInt();
+            catch (EOFException ex) {
+                // Corrupt node entry, skip it
             }
-            memories.add(new MemoryNode(nodeId, nodeValue, nodeConnections));
         }
     }
 

@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 
 /**
  *
@@ -18,10 +17,12 @@ public class Main {
             String line;
             Memory mem = new Memory();
             mem.loadFromFile(new File("C:\\memory.dat"));
-            System.out.println("My memories: ");
+            mem.mat.loadFromFile(new File("C:\\matrix.dat"));
+            /*System.out.println("My memories: ");
             for (MemoryNode node : mem.memories) {
-                System.out.print(node.value + ";");
-            }
+                System.out.println("{" + node.id + "} " + node.value + " " + Arrays.toString(node.connections));
+            }*/
+            System.out.println("Memories: " + mem.memories.size() + ", matrix size: " + mem.mat.getDim());
             System.out.println("\nI must learn more.");
             while (!"quit".equals(line = in.readLine())) {
                 String prevWord = null;
@@ -32,20 +33,20 @@ public class Main {
                     }
                     if (prevWord != null) {
                         MemoryNode curr = mem.recallMemory(word);
-                        String closest = mem.findClosestMemory(word);
-                        curr.incConnection(mem.recallMemory(prevWord).id);
+                        MemoryNode closest = mem.findClosestMemory(word);
                         if (closest == null) {
                             continue;
                         }
-                        ret += closest + " ";
+                        curr.incConnection(mem.recallMemory(prevWord).id);
+                        mem.mat.incElement(curr.id, closest.id);
+                        ret += closest.value + " ";
                     }
                     prevWord = word;
                 }
                 System.out.println("> " + ret);
             }
             mem.saveToFile(new File("C:\\memory.dat"));
-        } catch (UnsupportedEncodingException ex) {
-            ex.printStackTrace();
+            mem.mat.saveToFile(new File("C:\\matrix.dat"));
         } catch (IOException ex) {
             ex.printStackTrace();
         }
