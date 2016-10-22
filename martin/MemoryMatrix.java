@@ -73,7 +73,7 @@ public class MemoryMatrix {
             resize(Math.max(r, c));
         }
     }
-
+    
     private void resize(int newDim) {
         System.out.println("Gotta resize! old dim=" + dim + " newdim=" + newDim);
         int[] newArr = new int[newDim * newDim];
