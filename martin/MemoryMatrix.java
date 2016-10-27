@@ -42,7 +42,7 @@ public class MemoryMatrix {
 
     public void setElement(int r, int c, int value) {
         if (r <= 0 || c <= 0) {
-            System.out.println("setfalse");
+            Main.debug("setfalse");
             return;
         }
         ensureSize(r, c);
@@ -54,7 +54,7 @@ public class MemoryMatrix {
     }
     
     public int[] getHighestElement(int r) {
-        System.out.println("Getting highest elem for r=" + r + " dim=" + dim);
+        Main.debug("Getting highest elem for r=" + r + " dim=" + dim);
         int[] res = new int[2];
         res[0] = 0;
         res[1] = -1;
@@ -75,7 +75,7 @@ public class MemoryMatrix {
     }
     
     private void resize(int newDim) {
-        System.out.println("Gotta resize! old dim=" + dim + " newdim=" + newDim);
+        Main.debug("Gotta resize! old dim=" + dim + " newdim=" + newDim);
         int[] newArr = new int[newDim * newDim];
         for (int i = 0; i < dim; i++) {
             System.arraycopy(elements, i * dim, newArr, i * newDim, dim);
