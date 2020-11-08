@@ -25,11 +25,11 @@ public class CliClient implements Client {
         try {
             System.out.print("Debug? (y/N) ");
             debug = in.readLine().trim().equalsIgnoreCase("y");
-            System.out.println(debug);
+            System.out.println(debug ? "Debugging is on" : "Not debugging");
             
             System.out.print("Readonly? (y/N) ");
             readonly = in.readLine().trim().equalsIgnoreCase("y");
-            System.out.println(readonly);
+            System.out.println(readonly ? "Readonly mode on" : "Readonly NOT active");
         } catch (IOException ex) {
             println("Error: " + ex.getMessage() + ", using default");
             debug = true;
@@ -42,6 +42,7 @@ public class CliClient implements Client {
     }
 
     public String readln() {
+        System.out.print("> ");
         try {
             return in.readLine();
         } catch (IOException ex) {

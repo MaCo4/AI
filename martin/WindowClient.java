@@ -1,8 +1,5 @@
 package martin;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
  *
  * @author Magnus C. Hyll <magnus@hyll.no>

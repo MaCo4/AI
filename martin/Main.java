@@ -49,11 +49,13 @@ public class Main {
                 client.setStatText("Memories: " + mem.memories.size() + ", matrix size: " + mem.mat.getDim());
                 
                 if (client.isDebugging()) {
+                    client.println("---- DEBUG ----");
                     client.println(debugText);
+                    client.println("---------------");
                 }
                 debugText = "";
                 
-                client.println("> " + ret);
+                client.println("Martin says: " + ret);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
